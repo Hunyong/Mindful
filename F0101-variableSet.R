@@ -1,3 +1,9 @@
+.timePoints = c('common', 'bl', 'fu', '3mo', '6mo', '12mo', 'common-hist')
+.categories =  c('id', 'base', 'demographic', 'IBSS', 'anger', 'FILE', 'comorbidity', 'work productivity')
+# var.include$time %>% unique %>% paste(collapse ="', '")
+# var.include$category %>% unique %>% paste(collapse ="', '")
+
+
 # returns a set of variables of a specific category at a specific time point
 varSet <- function (category = "anger", time="all", covariate = NULL, var.data = var.include) {
   # screening
