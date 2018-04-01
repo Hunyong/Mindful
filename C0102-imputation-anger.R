@@ -19,7 +19,7 @@
   m <- 25 # number of imputations
   set.seed(100)
   a <- Sys.time()
-  data.anger.imp <- mice(data.working[,tmp$variable], m=m)
+  data.anger.imp <- mice(data.working[,tmp$variable %>% as.character], m=m)
   data.anger.list <- lapply(1:m, function(i) complete(data.anger.imp, action = i))
   Sys.time() - a #18.13 hours
   saveRDS(data.mice.anger.list, "../dataImputed/data.mice.anger.list.rds")
