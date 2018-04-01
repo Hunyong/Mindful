@@ -168,7 +168,7 @@ dim(data)  # 97 x 1608
     
     
   ## 0.2.6 coping strategy
-    extractVar("csq")
+    extractVar("csq") #check the name of coping variables
     
     coping = data.frame(bl = paste0("bcsq_", 1:48),
                         fu = paste0("csq_", 1:48),
