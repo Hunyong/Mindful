@@ -8,8 +8,10 @@
 ### C0501 Analysis - anger
 ## 0. library
 source("F0101-variableSet.R")
+source("F0501-timeFunction.R")
 library(lme4)
 library(dplyr)
+library(magrittr)
 library(geepack)
 
 ## 1. getting summary measures and long formats
@@ -20,6 +22,9 @@ library(geepack)
   data.working.base.anger.long <- long.list (data.list = data.working.base.anger, 
                                              long.vars = c("IBSS","unexp","extexp", "emoreg", "probsol"))
 
+  # transform time(1,2,3,4,5) to months
+  data.working.base.anger.long %<>% visit2month
+  
 #+ warning=FALSE
 #' ## 2. t-test  
   lm(unexp.3 - unexp.1 ~ treatmgroup_nr, data = data.working.base.anger[[1]]) %>% summary %>% "["("coefficients")
@@ -32,19 +37,19 @@ library(geepack)
 #' <br>
 #' 
 #' ## 3. mixed effect models  
-  lmer(unexp ~ treatmgroup_nr + (treatmgroup_nr|id), data = data.working.base.anger.long[[1]]) %>% summary %>% "["("coefficients")
-  lmer(extexp ~ treatmgroup_nr + (treatmgroup_nr|id), data = data.working.base.anger.long[[1]]) %>% summary %>% "["("coefficients")
-  lmer(emoreg ~ treatmgroup_nr + (treatmgroup_nr|id), data = data.working.base.anger.long[[1]]) %>% summary %>% "["("coefficients")
-  lmer(probsol ~ treatmgroup_nr + (treatmgroup_nr|id), data = data.working.base.anger.long[[1]]) %>% summary %>% "["("coefficients")
+  lmer(unexp ~ treatmgroup_nr * month  + (treatmgroup_nr|id), data = data.working.base.anger.long[[1]]) %>% summary %>% "["("coefficients")
+  lmer(extexp ~ treatmgroup_nr * month + (treatmgroup_nr|id), data = data.working.base.anger.long[[1]]) %>% summary %>% "["("coefficients")
+  lmer(emoreg ~ treatmgroup_nr * month + (treatmgroup_nr|id), data = data.working.base.anger.long[[1]]) %>% summary %>% "["("coefficients")
+  lmer(probsol ~ treatmgroup_nr * month + (treatmgroup_nr|id), data = data.working.base.anger.long[[1]]) %>% summary %>% "["("coefficients")
   
 
 #' <br>
 #' <br>
 #' 
 #' ## 4. marginal models (GEE)
-  geeglm(unexp ~ treatmgroup_nr, id = id, data = data.working.base.anger.long[[1]]) %>% summary %>% "["("coefficients")
-  geeglm(extexp ~ treatmgroup_nr, id = id, data = data.working.base.anger.long[[1]]) %>% summary %>% "["("coefficients")
-  geeglm(emoreg ~ treatmgroup_nr, id = id, data = data.working.base.anger.long[[1]]) %>% summary %>% "["("coefficients")
-  geeglm(probsol ~ treatmgroup_nr, id = id, data = data.working.base.anger.long[[1]]) %>% summary %>% "["("coefficients")
+  geeglm(unexp ~ treatmgroup_nr * month, id = id, data = data.working.base.anger.long[[1]]) %>% summary %>% "["("coefficients")
+  geeglm(extexp ~ treatmgroup_nr * month, id = id, data = data.working.base.anger.long[[1]]) %>% summary %>% "["("coefficients")
+  geeglm(emoreg ~ treatmgroup_nr * month, id = id, data = data.working.base.anger.long[[1]]) %>% summary %>% "["("coefficients")
+  geeglm(probsol ~ treatmgroup_nr * month, id = id, data = data.working.base.anger.long[[1]]) %>% summary %>% "["("coefficients")
   
   
