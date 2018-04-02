@@ -168,7 +168,7 @@ dim(data)  # 97 x 1608
     
     
   ## 0.2.6 coping strategy
-    extractVar("csq") #check the name of coping variables
+    extractVar("csq")#check the name of coping variables
     
     coping = data.frame(bl = paste0("bcsq_", 1:48),
                         fu = paste0("csq_", 1:48),
@@ -189,7 +189,7 @@ dim(data)  # 97 x 1608
     var.include = rbind(var.include, var.FILE)  # adding FILE variables
     var.include = rbind(var.include, var.comorbid)  # adding comorbidity variables
     var.include = rbind(var.include, var.work)  # adding work variables
-  #  var.include = rbind(var.include, var.coping)  # adding coping variables
+    var.include = rbind(var.include, var.coping)  # adding coping variables
     
     sample.include = which(!is.na(data$treatmgroup_nr))  # subject numbers of both arms
   ###############################################################################################
