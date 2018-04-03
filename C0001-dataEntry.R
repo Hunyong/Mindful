@@ -181,9 +181,10 @@ dim(data)  # 97 x 1608
                             category = "coping",
                             time = rep(c("bl", "fu", "3mo", "6mo", "12mo"), each=48))
     
-    # factor into numeric
+    # factor into numeric (adjust the answer levels to the same coding)
     for (i in var.coping$variable %>% as.character) data[, i] %<>% as.numeric  
-    
+    # numeric into factor
+    for (i in var.coping$variable %>% as.character) data[, i] %<>% as.factor
     
   ## var.include, sample.include ################################################################
     var.include = rbind(var.id, var.base)       # id and base(trt,...)
