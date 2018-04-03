@@ -14,7 +14,7 @@ library(dplyr)
 library(magrittr)
 library(geepack)
 
-## 1. getting summary measures and long formats
+## 0. getting summary measures and long formats
   # Getting summary measures
   data.working.base <- readRDS("../dataImputed/data.working.base.rds")
   data.working.anger <- readRDS("../dataImputed/data.working.anger.rds")
@@ -26,12 +26,19 @@ library(geepack)
   data.working.base.anger.long %<>% visit2month
   
 #+ warning=FALSE
-#' ## 2. t-test  
+#' ## 1. t-test  
   lm(unexp.3 - unexp.1 ~ treatmgroup_nr, data = data.working.base.anger[[1]]) %>% summary %>% "["("coefficients")
   lm(extexp.3 - extexp.1 ~ treatmgroup_nr, data = data.working.base.anger[[1]]) %>% summary %>% "["("coefficients")
   lm(emoreg.3 - emoreg.1 ~ treatmgroup_nr, data = data.working.base.anger[[1]]) %>% summary %>% "["("coefficients")
   lm(probsol.3 - probsol.1 ~ treatmgroup_nr, data = data.working.base.anger[[1]]) %>% summary %>% "["("coefficients")
 
+#' <br>
+#' <br>
+#' 
+#+ warning=FALSE
+#' ## 2. spaghetti plots
+
+  
   
 #' <br>
 #' <br>
@@ -51,5 +58,8 @@ library(geepack)
   geeglm(extexp ~ treatmgroup_nr * month, id = id, data = data.working.base.anger.long[[1]]) %>% summary %>% "["("coefficients")
   geeglm(emoreg ~ treatmgroup_nr * month, id = id, data = data.working.base.anger.long[[1]]) %>% summary %>% "["("coefficients")
   geeglm(probsol ~ treatmgroup_nr * month, id = id, data = data.working.base.anger.long[[1]]) %>% summary %>% "["("coefficients")
+  
+  geeglm(IBSS ~ treatmgroup_nr * month + unexp*treatmgroup_nr, id = id, data = data.working.base.anger.long[[1]]) %>% summary %>% "["("coefficients")
+  geeglm(IBSS ~ treatmgroup_nr * month + unexp + extexp + emoreg + probsol, id = id, data = data.working.base.anger.long[[1]]) %>% summary %>% "["("coefficients")
   
   

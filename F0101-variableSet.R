@@ -36,7 +36,7 @@ library(reshape2)
     # var.name: name of the construct
     result <- sapply(var.name.matrix, function(j) apply(data[ ,j], 1, measure))
     result <- as.data.frame(result)
-    names(result) <- paste(var.name, 1:5, sep = ".")
+    names(result) <- paste(var.name, 1:length(var.name.matrix), sep = ".")
     return(result)
   }
   # summarize the imputed datasets (list)
