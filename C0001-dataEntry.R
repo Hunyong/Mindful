@@ -6,7 +6,7 @@ source("F0001-basic.R")
 
 #### 0. Data Step ##############################################################################
 #### 0.0 data entry ############################################################################
-data = read.spss("../ENTIRE_dataset_MIBS_2013_04_12.sav", to.data.frame=TRUE)
+data = read.spss("../data/ENTIRE_dataset_MIBS_2013_04_12.sav", to.data.frame=TRUE)
 data$id %>% as.character %>% gsub(pattern=" ",replacement="") -> data$id
 dim(data)  # 97 x 1608
 
@@ -107,14 +107,6 @@ dim(data)  # 97 x 1608
       sapply(anger$probsol, function(s) alpha(data[,s]) %>% alpha.ci) # probsol
   
   
-    # mean scores
-      if (FALSE) { ##### !!!!This should be moved to after imputation!!!!! #####
-        # apply(data[ ,anger$unexp$bl], 1, mean) # simple coding for illustration purpose
-        anger.mean <- lapply(anger, function(i) sapply(i, function(j) apply(data[ ,j], 1, mean)))
-        anger.mean <- do.call(cbind, anger.mean) %>% as.data.frame
-        names(anger.mean) <- paste0(rep(c("unexp", "extexp", "emoreg", "probsol"), each=5), c(".bl", ".fu", ".3mo", ".6mo", ".12"))
-      }
-
   ###############################################################################################
 
   ## 0.2.3 FILE (family inventory of life events and changes): something like trauma  
