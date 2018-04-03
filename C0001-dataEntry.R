@@ -175,6 +175,7 @@ dim(data)  # 97 x 1608
     
     # factor into numeric (adjust the answer levels to the same coding)
     for (i in var.coping$variable %>% as.character) data[, i] %<>% as.numeric  
+    
     # numeric into factor
     for (i in var.coping$variable %>% as.character) data[, i] %<>% as.factor
     
