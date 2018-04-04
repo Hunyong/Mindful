@@ -14,3 +14,12 @@ visit2month <- function(data.list, time = "time", month = "month") {
     return(x)
   })
 }
+
+# change (treatmgroup_nr = 1,2) to (trt = 0,1)
+trt01 <- function(data.list, trt.var = "treatmgroup_nr", renamed.var = "trt") {
+  lapply(data.list, function(x) {
+    x[,trt.var] <- x[,trt.var] - 1
+    names(x)[which(names(x) == trt.var)] = renamed.var
+    return(x)
+  })
+}
