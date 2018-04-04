@@ -67,8 +67,8 @@ library(reshape2)
 # 4. list-wise reshaping
   # reshaping a dataset (wide to long)
   .wide2long <- function(data, long.vars, time = 1:5, id = "id") {
-    varying = do.call(c, lapply(long.vars, function(s) grep(s, names(data))))
-    reshape(data, direction = "long", idvar = id, v.names = long.vars, varying = varying) 
+    varying = lapply(long.vars, function(s) paste(s, time, sep="."))
+    reshape(data, direction = "long", idvar = id, v.names = long.vars, varying = varying, times=time) 
   }
   # wide to long for list
   long.list <- function(data.list, long.vars, time = 1:5, id = "id") {
