@@ -6,9 +6,9 @@ extractVar <- function(pattern, name = data.label$name, ...) {
 
 # alpha.ci: getting CI for cronbach's alpha
 alpha.ci <- function(x, digits = 2) {
-  round(c(x$total$raw_alpha - 1.96 * x$total$ase,                 
-          x$total$raw_alpha, 
-          x$total$raw_alpha + 1.96 * x$total$ase), digits = digits)
+  round(c(lower = x$total$raw_alpha - 1.96 * x$total$ase,                 
+          estimate = x$total$raw_alpha, 
+          upper = x$total$raw_alpha + 1.96 * x$total$ase), digits = digits)
 }
 
 # proportion of missing for each variable
