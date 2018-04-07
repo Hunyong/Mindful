@@ -101,10 +101,10 @@ dim(data)  # 97 x 1608
         for (i in anger.vector) data[, i] %<>% as.numeric  
       
     # confidence intervals of cronbach's alpha
-      sapply(anger$unexp, function(s) alpha(data[,s]) %>% alpha.ci) # unexp
-      sapply(anger$extexp, function(s) alpha(data[,s]) %>% alpha.ci) # extexp
-      sapply(anger$emoreg, function(s) alpha(data[,s]) %>% alpha.ci) # emoreg
-      sapply(anger$probsol, function(s) alpha(data[,s]) %>% alpha.ci) # probsol
+      sapply(anger$unexp, function(s) psych::alpha(data[,s]) %>% alpha.ci) # unexp
+      sapply(anger$extexp, function(s) psych::alpha(data[,s]) %>% alpha.ci) # extexp
+      sapply(anger$emoreg, function(s) psych::alpha(data[,s]) %>% alpha.ci) # emoreg
+      sapply(anger$probsol, function(s) psych::alpha(data[,s]) %>% alpha.ci) # probsol
   
   
   ###############################################################################################
@@ -112,14 +112,14 @@ dim(data)  # 97 x 1608
   ## 0.2.3 FILE (family inventory of life events and changes): something like trauma  
     FILE <- extractVar("^q[0-9]")  #^: begins with, [0-9]: numbers
     tmp <- which(grepl("_b", FILE[,2]))
-    FILE <- list(bl = FILE[tmp, 2], hist = FILE[-tmp, 2])
+    FILE <- list(bl = FILE[tmp, 2], recent = FILE[-tmp, 2])
       # bl: during last 12 months, hist: before last 12 months.
       order(gsub("q", "", gsub("_b", "", FILE$bl)) %>% as.numeric) == 1:71 # check if they are in the order
-      order(gsub("q", "", FILE$hist) %>% as.numeric) == 1:71 # check if they are in the order
+      order(gsub("q", "", FILE$recent) %>% as.numeric) == 1:71 # check if they are in the order
     FILE.vector = do.call(c, FILE)
     var.FILE = data.frame(variable = FILE.vector %>% as.character, 
                           category = "FILE", 
-                          time = rep(c("common", "common-hist"), each=71))
+                          time = rep(c("common-hist", "common"), each=71))
     
     # factor into numeric
     for (i in FILE.vector) data[, i] %<>% as.numeric  # yes = 1, no = 2
@@ -194,5 +194,7 @@ dim(data)  # 97 x 1608
 
   data.working = data[sample.include, var.include$variable %>% as.character]
   #saveRDS(data.working, "data.working.rds")
-  
-  
+  #saveRDS(data, "data.raw.rds")
+  #saveRDS(anger, "anger.rds")
+  #saveRDS(sample.include, "sample.include.rds")
+    
