@@ -1,11 +1,11 @@
 #' ---
 #' title: Anger and FILE - Factor analysis and Descriptive statistics
 #' author: Group H
-#' date: April 2, 2018
+#' date: April 9, 2018
 #' ---
 #+ echo=FALSE, warning=FALSE, include=FALSE
 
-### C0502 Analysis - anger : descriptive and factor analysis
+### C0502 Analysis - anger. Descriptive and factor analysis
 
 library(foreign)
 library(dplyr); library(magrittr)
@@ -131,42 +131,97 @@ timePoints = c("baseline", "2 weeks", "3 months", "6 months", "12 months")
   paste(c("FILE.base", "FILE.recent"), "~ trt") %>% 
     lapply(as.formula) %>% 
     lapply(function(x) aggregate(x, data=tmp[tmp$month==0,], FUN = mean)) ->
-    tmp.2 # mean outcomes by month and trt
+    tmp.5 # mean outcomes by month and trt
   lapply(1:2, function(i) {
-    result <- tmp.2[[i]]
+    result <- tmp.5[[i]]
     result$factor = c("historical", "recent")[i]
     names(result)[2] = "outcome"
     return(result)
   }) %>% 
-    do.call(what=rbind) -> tmp.3
+    do.call(what=rbind) -> tmp.5
   
   # std
   paste(c("FILE.base", "FILE.recent"), "~ trt") %>% 
     lapply(as.formula) %>% 
     lapply(function(x) aggregate(x, data=tmp[tmp$month==0,], FUN = sd)) ->
-    tmp.2se # mean outcomes by month and trt
+    tmp.5se # mean outcomes by month and trt
   lapply(1:2, function(i) {
-    result <- tmp.2se[[i]]
+    result <- tmp.5se[[i]]
     result$factor = c("historical", "recent")[i]
     names(result)[2] = "stdDev"
     return(result)
   }) %>% 
-    do.call(what=rbind) -> tmp.3se
-  tmp.3 <- left_join(tmp.3, tmp.3se, by=c("trt", "factor"))
+    do.call(what=rbind) -> tmp.5se
+  tmp.5 <- left_join(tmp.5, tmp.5se, by=c("trt", "factor"))
   
   
-  # 2A. Mean plot
-  tmp.3 %>% 
+  # 3A. Mean plot
+  tmp.5 %>% 
     ggplot(aes(factor, outcome, col=ifelse(trt, "Mindfulness Group", "Support Group"))) + geom_line() + geom_point() +
     theme(legend.position="bottom") + xlab(NULL) + scale_color_discrete(name=NULL) +
     ggtitle("Mean values of summed FILE by Treatment group and recency")
   
-  # 2B. Table
-  tmp.4 <- tmp.3[c(1,3,2,4),c(1,3,2,4)]
-  names(tmp.4) <- c("Group", "Recency", "Mean", "Standard deviation")
-  tmp.4$Group %<>% ifelse("Mindfulness Group", "Support Group")
+  # 3B. Table
+  tmp.6 <- tmp.5[c(1,3,2,4),c(1,3,2,4)]
+  names(tmp.6) <- c("Group", "Recency", "Mean", "Standard deviation")
+  tmp.6$Group %<>% ifelse("Mindfulness Group", "Support Group")
   
-  kable(tmp.4, row.names = FALSE, digits = 2,
+  kable(tmp.6, row.names = FALSE, digits = 2,
         caption = "Descriptive statistics of FILE")
-  rm(tmp.4, tmp.3)
+  rm(tmp.6, tmp.5)
   
+  
+#'
+#' ## 4. Anger FILE interaction - Descriptive statistics (The first imputed data)
+#+ echo=FALSE, warning=FALSE
+# 4X. getting summaries (mean, std)
+  tmp <- data.working.baf.long[[1]]
+  tmp$FILE.recent %>% summary %>% as.matrix %>%t %>% data.frame %>% kable (caption="Summary of FILE") # median = 10
+  #tmp$FILE.base %>% summary # median = 13
+  
+  tmp$FILE.recent.bin <- ifelse(tmp$FILE.recent <=10,'Low FILE', 'High FILE')
+  #tmp$FILE.recent.bin <- ifelse(tmp$FILE.base <=13,'Low FILE', 'High FILE')
+  
+  # mean outcome
+  paste(anger.factor, "~ month + trt + FILE.recent.bin") %>% 
+    lapply(as.formula) %>% 
+    lapply(function(x) aggregate(x, data=tmp, FUN = mean)) ->
+    tmp.2 # mean outcomes by month and trt
+  lapply(1:4, function(i) {
+    result <- tmp.2[[i]]
+    result$factor = anger.factor.full[i]
+    names(result)[4] = "outcome"
+    return(result)
+  }) %>% 
+    do.call(what=rbind) -> tmp.3
+  
+  # std
+  paste(anger.factor, "~ month + trt + FILE.recent.bin") %>% 
+    lapply(as.formula) %>% 
+    lapply(function(x) aggregate(x, data=tmp, FUN = sd)) ->
+    tmp.2se # mean outcomes by month and trt
+  lapply(1:4, function(i) {
+    result <- tmp.2se[[i]]
+    result$factor = anger.factor.full[i]
+    names(result)[4] = "stdDev"
+    return(result)
+  }) %>% 
+    do.call(what=rbind) -> tmp.3se
+  tmp.3 <- left_join(tmp.3, tmp.3se, by=c("month", "trt", "factor", "FILE.recent.bin"))
+  
+  # 2A. Mean plot
+  tmp.3 %>% 
+    ggplot(aes(month, outcome, col=factor, shape = FILE.recent.bin)) + geom_line(aes(linetype = FILE.recent.bin)) + geom_point() +
+    #geom_errorbar(aes(ymin=outcome-stdDev, ymax=outcome+stdDev), width=.1) +
+    facet_grid(.~ifelse(trt, "Mindfulness Group", "Support Group")) +
+    theme(legend.position="bottom")+
+    scale_x_continuous(breaks = c( .5, 3, 6, 12))+
+    ggtitle("Mean values of anger constructs by Treatment group, FILE level, and Follow-up")
+
+#'  Remarkable interactions are shown in Emotion regulation (red) and Unexpressed Anger (purple).
+#'  <br>
+#'  
+#'  [Emotion regulation] Minfulness intervention increases Emotion regulation for the distressed group.
+#'  <br>
+#'  
+#'  [Unexpressed Anger] For those less-distressed people, no intervention increases the Unexpressed Anger.
