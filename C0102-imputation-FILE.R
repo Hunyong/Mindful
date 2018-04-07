@@ -11,7 +11,7 @@ library(psych) # Chronbach's alpha
   tmp <- varSet(category="FILE", covariate = c("base", "demographic", "IBSS"))
   which(tmp$time =="common") #87 ~ 157
   tmp.b = tmp[1:86,]            # baseline FILE
-  tmp.h = tmp[c(1:15, 87:157),] # historic FILE
+  tmp.r = tmp[c(1:15, 87:157),] # recent FILE
   
   
   m <- 25 # number of imputations
@@ -43,54 +43,58 @@ library(psych) # Chronbach's alpha
   # baseline FILE (before last 12 months)
   set.seed(100)
   a <- Sys.time()
-  data.mice.FILE.h.imp <- mice(data[,tmp.h$variable %>% as.character], m=m)
+  data.mice.FILE.r.imp <- mice(data[,tmp.r$variable %>% as.character], m=m)
   Sys.time() - a #3.8 hours
   
   # See if there is non-imputed variables
-  data.mice.FILE.h.imp$predictorMatrix %>% apply(2,sum) %>% "=="(0) %>% which
+  data.mice.FILE.r.imp$predictorMatrix %>% apply(2,sum) %>% "=="(0) %>% which
   # q27 and q68 are still not imputed (multicolinear with q24(almost) and q67 respectively)
   # 3 and 5 subjects are missing.
   data[c("q12", "q23", "q24", "q27", "q57", "q67", "q68")] # impute with with q67 for q68, and 0(mode) for q27.
   # Not clear which one to impute for q27, but only 3 subjects are missing and mostly they are 0. so mode imputation is reasonable.
   
-  data.mice.FILE.h.list <- lapply(1:m, function(i) complete(data.mice.FILE.h.imp, action = i))
+  data.mice.FILE.r.list <- lapply(1:m, function(i) complete(data.mice.FILE.r.imp, action = i))
   for (i in 1:m) {
-    tmp.h <- data.mice.FILE.h.list[[i]]
-    tmp.h$q27[is.na(tmp.h$q27)] <- 0
-    tmp.h$q68[is.na(tmp.h$q68)] <- tmp.h$q67[is.na(tmp.h$q68)]
-    data.mice.FILE.h.list[[i]] <- tmp.h
+    tmp.r <- data.mice.FILE.r.list[[i]]
+    tmp.r$q27[is.na(tmp.r$q27)] <- 0
+    tmp.r$q68[is.na(tmp.r$q68)] <- tmp.r$q67[is.na(tmp.r$q68)]
+    data.mice.FILE.r.list[[i]] <- tmp.r
   }
-  data.mice.FILE.h.list <- lapply(data.mice.FILE.h.list, function(x) x[sample.include,])
-  saveRDS(data.mice.FILE.h.imp, "../dataImputed/data.mice.FILE.h.imp.rds")
-  saveRDS(data.mice.FILE.h.list, "../dataImputed/data.mice.FILE.h.list.rds")
+  data.mice.FILE.r.list <- lapply(data.mice.FILE.r.list, function(x) x[sample.include,])
+  saveRDS(data.mice.FILE.r.imp, "../dataImputed/data.mice.FILE.r.imp.rds")
+  saveRDS(data.mice.FILE.r.list, "../dataImputed/data.mice.FILE.r.list.rds")
   
   if (FALSE) {
     data.mice.FILE.b.imp <- readRDS("../dataImputed/data.mice.FILE.b.imp.rds")
-    data.mice.FILE.h.imp <- readRDS("../dataImputed/data.mice.FILE.h.imp.rds")
+    data.mice.FILE.r.imp <- readRDS("../dataImputed/data.mice.FILE.r.imp.rds")
     data.mice.FILE.b.list <- readRDS("../dataImputed/data.mice.FILE.b.list.rds")
-    data.mice.FILE.h.list <- readRDS("../dataImputed/data.mice.FILE.h.list.rds")
+    data.mice.FILE.r.list <- readRDS("../dataImputed/data.mice.FILE.r.list.rds")
   }
   
   
   
 # 2.0 summary of FILE
-  data.mice.FILE.bh.list <- cbind.list(data.mice.FILE.b.list, data.mice.FILE.h.list)
-  data.mice.FILE.bh.list <- lapply(data.mice.FILE.bh.list, function(x) x[,-(87:101)])
-  for (i in 1:m) write.csv(data.mice.FILE.bh.list[[i]],paste0("../dataImputedFILE/FILE_imputed_", i, ".csv"))
+  data.mice.FILE.br.list <- cbind.list(data.mice.FILE.b.list, data.mice.FILE.r.list)
+  data.mice.FILE.br.list <- lapply(data.mice.FILE.br.list, function(x) x[,-(87:101)])
+  
+  # Adding id for integrity
+  for (i in 1:m) data.mice.FILE.br.list[[i]] = data.frame(id = (data$id %>% as.character)[sample.include], 
+                                                          data.mice.FILE.br.list[[i]])
+  for (i in 1:m) write.csv(data.mice.FILE.br.list[[i]],paste0("../dataImputedFILE/FILE_imputed_", i, ".csv"))
   
   View(data.label)  # description
   data.label[416,]  # q69
   
-  tmp.FILE.bl <- lapply(data.mice.FILE.bh.list, function(x)
-    data.frame(FILE.0 =  x[,FILE$bl %>% as.character] %>% apply(1, sum))
+  tmp.FILE.bl <- lapply(data.mice.FILE.br.list, function(x)
+    data.frame(FILE.base =  x[,FILE$bl %>% as.character] %>% apply(1, sum))
     )
-  tmp.FILE.hist <- lapply(data.mice.FILE.bh.list, function(x)
-    data.frame(FILE.hist =  x[,FILE$bl %>% as.character] %>% apply(1, sum))
+  tmp.FILE.recent <- lapply(data.mice.FILE.br.list, function(x)
+    data.frame(FILE.recent =  x[,FILE$recent %>% as.character] %>% apply(1, sum))
     )
-  tmp.FILE.child <- lapply(data.mice.FILE.bh.list, function(x) x[,"q69", drop=FALSE])
+  tmp.FILE.child <- lapply(data.mice.FILE.br.list, function(x) x[,"q69_b", drop=FALSE])
   
   # combine
-  data.working.FILE <- cbind.list(tmp.FILE.bl, tmp.FILE.hist)
+  data.working.FILE <- cbind.list(tmp.FILE.bl, tmp.FILE.recent)
   data.working.FILE <- cbind.list(data.working.FILE, tmp.FILE.child)
   
   saveRDS(data.working.FILE, "../dataImputed/data.working.FILE.rds")
