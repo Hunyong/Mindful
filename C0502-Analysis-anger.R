@@ -198,7 +198,7 @@ m = 25
 #' <br>
 #' 
 #' ## Second model - Some interactions removed
-#' ### Model. Constructs ~ trt * month + FILE
+#' ### Model. Constructs ~ trt * month + FILE * trt
 #' Interaction effects are mostly very small. 
 #' Treatment * FILE interaction seems to be the only one that is potentially important.
 #' 
@@ -206,19 +206,19 @@ m = 25
 #+ echo=FALSE, warning=FALSE
   
   lapply(1:m, function(i) 
-    geeglm(unexp ~ trt * month + FILE.recent, id = id, data = data.working.baf.long[[i]]) %>% summary %>% "[["("coefficients")) %>% 
+    geeglm(unexp ~ trt * month + FILE.recent * trt, id = id, data = data.working.baf.long[[i]]) %>% summary %>% "[["("coefficients")) %>% 
     Rubin.list(std.name = "Std.err") %>% kable(digits=3, caption = "Marginal model of Unexpressed Anger adjusted for FILE score")
   
   lapply(1:m, function(i) 
-    geeglm(extexp ~ trt * month + FILE.recent, id = id, data = data.working.baf.long[[i]]) %>% summary %>% "[["("coefficients")) %>% 
+    geeglm(extexp ~ trt * month + FILE.recent * trt, id = id, data = data.working.baf.long[[i]]) %>% summary %>% "[["("coefficients")) %>% 
     Rubin.list(std.name = "Std.err") %>% kable(digits=3, caption = "Marginal model of External Expression adjusted for FILE score")
   
   lapply(1:m, function(i) 
-    geeglm(emoreg ~ trt * month + FILE.recent, id = id, data = data.working.baf.long[[i]]) %>% summary %>% "[["("coefficients")) %>% 
+    geeglm(emoreg ~ trt * month + FILE.recent * trt, id = id, data = data.working.baf.long[[i]]) %>% summary %>% "[["("coefficients")) %>% 
     Rubin.list(std.name = "Std.err") %>% kable(digits=3, caption = "Marginal model of Emotion Regulation adjusted for FILE score")
   
   lapply(1:m, function(i) 
-    geeglm(probsol ~ trt * month + FILE.recent, id = id, data = data.working.baf.long[[i]]) %>% summary %>% "[["("coefficients")) %>% 
+    geeglm(probsol ~ trt * month + FILE.recent * trt, id = id, data = data.working.baf.long[[i]]) %>% summary %>% "[["("coefficients")) %>% 
     Rubin.list(std.name = "Std.err") %>% kable(digits=3, caption = "Marginal model of Problem Solving adjusted for FILE score")
 
 #' Overall, people with many distressing events have higher scores
