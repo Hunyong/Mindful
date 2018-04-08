@@ -46,6 +46,26 @@ lapply(1:m, function(i)
   lm(IBSS.3 - IBSS.1 ~ trt  * (unexp.1 + extexp.1 + emoreg.1 + probsol.1), data = data.working.baf[[i]]) %>% summary %>% "[["("coefficients")) %>% 
   Rubin.list() %>% kable(digits=3, caption = "ANCOVA of Unexpressed Anger controlling for distressing events")
 
+#' ### Model. (IBSS.3 - IBSS.1) ~ trt  * (each anger construct)
+#+ warning=FALSE, echo=FALSE
+
+lapply(1:m, function(i) 
+  lm(IBSS.3 - IBSS.1 ~ trt  * unexp.1, data = data.working.baf[[i]]) %>% summary %>% "[["("coefficients")) %>% 
+  Rubin.list() %>% kable(digits=3, caption = "ANCOVA of Unexpressed 1) Unexpressed anger controlling for distressing events")
+
+lapply(1:m, function(i) 
+  lm(IBSS.3 - IBSS.1 ~ trt  * extexp.1, data = data.working.baf[[i]]) %>% summary %>% "[["("coefficients")) %>% 
+  Rubin.list() %>% kable(digits=3, caption = "ANCOVA of Unexpressed 2) External expression controlling for distressing events")
+
+lapply(1:m, function(i) 
+  lm(IBSS.3 - IBSS.1 ~ trt  * emoreg.1, data = data.working.baf[[i]]) %>% summary %>% "[["("coefficients")) %>% 
+  Rubin.list() %>% kable(digits=3, caption = "ANCOVA of Unexpressed 3) Emotion regulation controlling for distressing events")
+
+lapply(1:m, function(i) 
+  lm(IBSS.3 - IBSS.1 ~ trt  * probsol.1, data = data.working.baf[[i]]) %>% summary %>% "[["("coefficients")) %>% 
+  Rubin.list() %>% kable(digits=3, caption = "ANCOVA of Unexpressed 4) Problem solving controlling for distressing events")
+
+
 #' <br>
 #' <br>
 #' 
@@ -71,7 +91,27 @@ lapply(1:m, function(i)
 
 lapply(1:m, function(i) 
   geeglm(IBSS ~ trt * month + (unexp + extexp + emoreg + probsol), id = id, data = data.working.baf.long[[i]]) %>% summary %>% "[["("coefficients")) %>% 
-  Rubin.list(std.name = "Std.err") %>% kable(digits=3, caption = "Marginal model of Problem Solving adjusted for FILE score")
+  Rubin.list(std.name = "Std.err") %>% kable(digits=3, caption = "Marginal model of IBSS adjusted for anger scores")
 
-#' Overall, people with many distressing events have higher scores
-#' (small p-values for all but emotion regulation).
+#' Controlling for anger scores, treatment effects are positive on IBSS score, which is contradictory to the previous result.
+#' Controlling for time and treatment, people with higher emotion regulation scores will have low IBSS.
+#' 
+#' 
+
+#' ### Model. IBSS ~ trt * month + (emoreg + probsol) + FILE
+#' 
+#' 
+#+ echo=FALSE, warning=FALSE
+
+lapply(1:m, function(i) 
+  geeglm(IBSS ~ trt * month + (emoreg + probsol) + FILE.recent, id = id, data = data.working.baf.long[[i]]) %>% summary %>% "[["("coefficients")) %>% 
+  Rubin.list(std.name = "Std.err") %>% kable(digits=3, caption = "Marginal model of IBSS adjusted for anger and FILE scores")
+
+
+#' ### Model. IBSS ~ trt * month + (emoreg + probsol) * FILE
+#' 
+#' 
+#+ echo=FALSE, warning=FALSE
+lapply(1:m, function(i) 
+  geeglm(IBSS ~ trt * month + (emoreg + probsol) * FILE.recent, id = id, data = data.working.baf.long[[i]]) %>% summary %>% "[["("coefficients")) %>% 
+  Rubin.list(std.name = "Std.err") %>% kable(digits=3, caption = "Marginal model of IBSS adjusted for anger scores with interaction")
