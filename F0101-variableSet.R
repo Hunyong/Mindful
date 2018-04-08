@@ -57,10 +57,13 @@ library(reshape2)
     if (length(list.x) != length(list.y)) 
       stop ("The lengths of list.x and list.y differ.")
     
+    #column index of y not duplicated in x
+    nondup = which(! names(list.y[[1]]) %in% names(list.x[[1]]))
+    
     lapply(1:(length(list.x)), function(i) {
       if (!identical(row.names(list.x[[i]]), row.names(list.y[[i]]))) 
         stop ("The row names of list.x and list.y differ.")
-      cbind(list.x[[i]], list.y[[i]])
+      cbind(list.x[[i]], list.y[[i]][,nondup])
     })
   }
   
