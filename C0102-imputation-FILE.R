@@ -71,7 +71,11 @@ library(psych) # Chronbach's alpha
     data.mice.FILE.r.list <- readRDS("../dataImputed/data.mice.FILE.r.list.rds")
   }
   
-  
+  # imputed dataset, item level, base + anger + FILE + comorbidity
+  data.imputed.itemlevel <- cbind.list(data.mice.anger.list, data.mice.FILE.b.list)
+  data.imputed.itemlevel <- cbind.list(data.imputed.itemlevel, data.mice.FILE.r.list)
+  data.imputed.itemlevel <- cbind.list(data.imputed.itemlevel, data.mice.comorbid.list)
+  saveRDS(data.imputed.itemlevel, "../dataImputed/data.imputed.itemlevel.rds")
   
 # 2.0 summary of FILE
   data.mice.FILE.br.list <- cbind.list(data.mice.FILE.b.list, data.mice.FILE.r.list)
