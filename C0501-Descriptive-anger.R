@@ -24,6 +24,7 @@ anger.vector <- do.call(c, do.call(c, anger))
 data.working.base <- readRDS("../dataImputed/data.working.base.rds")
 data.working.anger <- readRDS("../dataImputed/data.working.anger.rds")
 data.working.FILE <- readRDS("../dataImputed/data.working.FILE.rds")
+data.mice.FILE.r.list <- readRDS("../dataImputed/data.mice.FILE.r.list.rds")
 data.working.baf <- cbind.list(data.working.base, data.working.anger)
 data.working.baf <- cbind.list(data.working.baf, data.working.FILE)
 data.working.baf.long <- long.list (data.list = data.working.baf, 
@@ -126,6 +127,8 @@ timePoints = c("baseline", "2 weeks", "3 months", "6 months", "12 months")
 #' and were measured about 1) recent events (during last 12 months) and 2) historical events (before last 12 months).
 #+ echo=FALSE, warning=FALSE
   
+  alpha.ci(psych::alpha(data.mice.FILE.br.list[[1]][,FILE[[2]]])) %>%
+    kable(caption = "Cronbach's alpha for FILE")
   
   # mean outcome
   paste(c("FILE.base", "FILE.recent"), "~ trt") %>% 
