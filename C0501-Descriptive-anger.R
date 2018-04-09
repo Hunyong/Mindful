@@ -25,6 +25,7 @@ data.working.base <- readRDS("../dataImputed/data.working.base.rds")
 data.working.anger <- readRDS("../dataImputed/data.working.anger.rds")
 data.working.FILE <- readRDS("../dataImputed/data.working.FILE.rds")
 data.mice.FILE.r.list <- readRDS("../dataImputed/data.mice.FILE.r.list.rds")
+FILE <- readRDS("FILE.rds")
 data.working.baf <- cbind.list(data.working.base, data.working.anger)
 data.working.baf <- cbind.list(data.working.baf, data.working.FILE)
 data.working.baf.long <- long.list (data.list = data.working.baf, 
@@ -127,7 +128,7 @@ timePoints = c("baseline", "2 weeks", "3 months", "6 months", "12 months")
 #' and were measured about 1) recent events (during last 12 months) and 2) historical events (before last 12 months).
 #+ echo=FALSE, warning=FALSE
   
-  alpha.ci(psych::alpha(data.mice.FILE.br.list[[1]][,FILE[[2]]])) %>%
+  alpha.ci(psych::alpha(data.mice.FILE.r.list[[1]][,FILE[[2]]])) %>%
     kable(caption = "Cronbach's alpha for FILE")
   
   # mean outcome
@@ -220,11 +221,3 @@ timePoints = c("baseline", "2 weeks", "3 months", "6 months", "12 months")
     theme(legend.position="bottom")+
     scale_x_continuous(breaks = c( .5, 3, 6, 12))+
     ggtitle("Mean values of anger constructs by Treatment group, FILE level, and Follow-up")
-
-#'  Remarkable interactions are shown in Emotion regulation (red) and Unexpressed Anger (purple).
-#'  <br>
-#'  
-#'  [Emotion regulation] Minfulness intervention increases Emotion regulation for the distressed group.
-#'  <br>
-#'  
-#'  [Unexpressed Anger] For those less-distressed people, no intervention increases the Unexpressed Anger.

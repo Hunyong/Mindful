@@ -184,16 +184,14 @@ m = 25
     geeglm(probsol ~ trt * month*FILE.recent, id = id, data = data.working.baf.long[[i]]) %>% summary %>% "[["("coefficients")) %>% 
     Rubin.list(std.name = "Std.err") %>% kable(digits=3, caption = "Marginal model of Problem Solving adjusted for FILE score")
   
-#' The baseline problem solving score was lower for intervention group than for the support group. 
+#' The baseline problem solving score was higher for intervention group than for the support group. 
 #' This is an unexpected result and might be caused by random chance since it is before the intervention was given.
 #' Or this might be caused by the model misspecification in terms of time. (See the highly non-monotone trends)
 #' 
 #' <br>
 #' 
 #' The other coefficient to look at is the treatment-FILE interaction. 
-#' Pay attention to the mean probelm solving scores at baseline.
-#' The orders of low-high FILE are flipped between Mindfulness group and the support group.
-#' Again, this should not be significant and does not have meaningful interpretation.
+#' This also should not be significant and does not have meaningful interpretation.
 #' 
 #' <br>
 #' 

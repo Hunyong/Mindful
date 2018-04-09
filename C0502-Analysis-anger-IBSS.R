@@ -46,6 +46,7 @@ lapply(1:m, function(i)
   lm(IBSS.3 - IBSS.1 ~ trt  * (unexp.1 + extexp.1 + emoreg.1 + probsol.1), data = data.working.baf[[i]]) %>% summary %>% "[["("coefficients")) %>% 
   Rubin.list() %>% kable(digits=3, caption = "ANCOVA of Unexpressed Anger controlling for distressing events")
 
+
 #' ### Model. (IBSS.3 - IBSS.1) ~ trt  * (each anger construct)
 #+ warning=FALSE, echo=FALSE
 
@@ -93,7 +94,7 @@ lapply(1:m, function(i)
   geeglm(IBSS ~ trt * month + (unexp + extexp + emoreg + probsol), id = id, data = data.working.baf.long[[i]]) %>% summary %>% "[["("coefficients")) %>% 
   Rubin.list(std.name = "Std.err") %>% kable(digits=3, caption = "Marginal model of IBSS adjusted for anger scores")
 
-#' Controlling for anger scores, treatment effects are positive on IBSS score, which is contradictory to the previous result.
+#' Controlling for anger scores, treatment effects are negative on IBSS score, which is congruent to the previous result.
 #' Controlling for time and treatment, people with higher emotion regulation scores will have low IBSS.
 #' 
 #' 
