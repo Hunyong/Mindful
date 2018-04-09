@@ -6,7 +6,7 @@ source("F0001-basic.R")
 
 #### 0. Data Step ##############################################################################
 #### 0.0 data entry ############################################################################
-data = read.spss("../ENTIRE_dataset_MIBS_2013_04_12.sav", to.data.frame=TRUE)
+data = read.spss("../data/ENTIRE_dataset_MIBS_2013_04_12.sav", to.data.frame=TRUE)
 data$id %>% as.character %>% gsub(pattern=" ",replacement="") -> data$id
 dim(data)  # 97 x 1608
 
