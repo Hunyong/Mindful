@@ -57,18 +57,21 @@ library(reshape2)
     if (length(list.x) != length(list.y)) 
       stop ("The lengths of list.x and list.y differ.")
     
+    #column index of y not duplicated in x
+    nondup = which(! names(list.y[[1]]) %in% names(list.x[[1]]))
+    
     lapply(1:(length(list.x)), function(i) {
       if (!identical(row.names(list.x[[i]]), row.names(list.y[[i]]))) 
         stop ("The row names of list.x and list.y differ.")
-      cbind(list.x[[i]], list.y[[i]])
+      cbind(list.x[[i]], list.y[[i]][,nondup])
     })
   }
   
 # 4. list-wise reshaping
   # reshaping a dataset (wide to long)
   .wide2long <- function(data, long.vars, time = 1:5, id = "id") {
-    varying = do.call(c, lapply(long.vars, function(s) grep(s, names(data))))
-    reshape(data, direction = "long", idvar = id, v.names = long.vars, varying = varying) 
+    varying = lapply(long.vars, function(s) paste(s, time, sep="."))
+    reshape(data, direction = "long", idvar = id, v.names = long.vars, varying = varying, times=time) 
   }
   # wide to long for list
   long.list <- function(data.list, long.vars, time = 1:5, id = "id") {
