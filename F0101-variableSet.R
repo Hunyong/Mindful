@@ -43,7 +43,7 @@ library(reshape2)
   summarizedVar <- function(data.list, var.name.matrix, measure = mean, var.name) {
     # data.list: m datasets
     lapply(data.list, function(x) {
-      .summarizedVar(data = x, var.name.matrix = var.name.matrix, measure = mean, var.name = var.name)
+      .summarizedVar(data = x, var.name.matrix = var.name.matrix, measure = measure, var.name = var.name)
     })
   }
 
@@ -51,7 +51,9 @@ library(reshape2)
       .summarizedVar(data = data.working, var.name.matrix = anger$probsol, measure = mean, var.name = "probsol")
       summarizedVar(data = data.anger.list, var.name.matrix = anger$probsol, measure = mean, var.name = "probsol")
     }
+
   
+    
 # 3. list-wise cbinding
   cbind.list <- function(list.x, list.y) {
     if (length(list.x) != length(list.y)) 
