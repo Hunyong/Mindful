@@ -128,3 +128,5 @@ var.cp = data.frame(variable =  as.vector(as.matrix(CP)),
                     category = "coping9",
                     time = rep(c("bl", "fu", "3mo", "6mo", "12mo"), each=35))
 
+#variable of interests.
+var.ins<-
